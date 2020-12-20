@@ -12,7 +12,8 @@ public class Node extends Thread {
 	ArrayList<String> message = new ArrayList<String>();
 	int port;
 	ServerSocket server;
-	static int nodeCount;
+	public static int nodeCount;
+	public static int cycle;
 
 	Node(int port) throws IOException {
 		this.port = port;
@@ -38,6 +39,8 @@ public class Node extends Thread {
 				/* Send verification upon receiving all replies */
 				
 				if (count % Node.nodeCount == 0) {
+					/* check majority */
+					
 					/* Broadcast to all */
 					Thread t = new Sender(message, this.port);
 					t.start();

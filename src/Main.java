@@ -27,8 +27,9 @@ public class Main {
 		}
 
 		Node.nodeCount = ports.length;
+		Node.cycle = 0;
 		Sender.ports = ports;
-
+		
 		/*
 		 * Case1: all loyal nodes
 		 * 

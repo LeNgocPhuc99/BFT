@@ -37,7 +37,6 @@ public class Main {
 		 */
 
 		/* Case2: node 8080 propose message */
-
 		for (int i = 1; i < ports.length; i++) {
 			Socket socket = new Socket("127.0.0.1", ports[i]);
 			PrintWriter out = new PrintWriter(socket.getOutputStream(), true);

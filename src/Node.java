@@ -21,13 +21,16 @@ public class Node extends Thread {
 	ServerSocket server;
 	public static int nodeCount;
 	public static int cycle;
+	private String proposeMessage = null;
 
 	Node(int port) throws IOException {
 		this.port = port;
 		this.server = new ServerSocket(this.port);
 	}
 
-	public void propose(int[] ports) throws UnknownHostException, IOException {
+	public void propose(int[] ports, String proposeMessage) throws UnknownHostException, IOException {
+		
+		this.proposeMessage = proposeMessage;
 		for (int i = 0; i < ports.length; i++) {
 			Socket socket = new Socket("127.0.0.1", ports[i]);
 			PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
@@ -55,7 +58,7 @@ public class Node extends Thread {
 	}
 
 	public void commit(String message) {
-		System.out.println("Commit: " + message);
+		System.out.println("Node " + Integer.toString(this.port - 8080) + " commit: " + message);
 	}
 
 	private boolean verifyMessage(JSONObject json, int portID) throws JSONException {
@@ -64,7 +67,7 @@ public class Node extends Thread {
 		 * (cycle % nodeCount == nodeID): send in correct round, ( (portID - 8080) ==
 		 * nodeID): proposer is correct
 		 */
-		if ((cycle % nodeCount == nodeID) && ((portID - 8080) == nodeID)) {
+		if ((cycle % (nodeCount - 1) == nodeID) /*&& ((portID - 8080) == nodeID)*/) {
 			return true;
 		}
 		return false;
@@ -87,7 +90,6 @@ public class Node extends Thread {
 		try {
 
 			int count = 0;
-			String messagePropose = null;
 			while (true) {
 				/* Socket to receive incoming requests */
 				Socket socket = server.accept();
@@ -97,6 +99,7 @@ public class Node extends Thread {
 				String rawMsg = in.readLine();
 				JSONObject json = new JSONObject(rawMsg);
 				System.out.println("Node " + Integer.toString(this.port - 8080) + " receive: " + rawMsg);
+				//System.out.println("Receive port: " + socket.getInetAddress().getHostName()+ " - ID's sender: " + json.getInt("nodeID"));
 				/* message not match its round */
 				if (json.getInt("cycle") != cycle) {
 					continue;
@@ -107,7 +110,7 @@ public class Node extends Thread {
 				switch (json.getInt("type")) {
 				case 1: /* receive propose message from proposer */
 					/* broadcast voting message */
-					messagePropose = rawMsg;
+					this.proposeMessage = rawMsg;
 					vote(json, rePort);
 					break;
 				case 2: /* receive voting message from another node */
@@ -116,12 +119,12 @@ public class Node extends Thread {
 					votes.put(json.getInt("nodeID"), newVote);
 
 					// votes.put(json.getInt("nodeID"), ));
-					if (count % nodeCount == 0) {
+					if (count % (nodeCount - 1) == 0) {
 						/* get majority vote */
 						Vote vote = getMajorityVote();
 						if (vote.equals(Vote.YES)) {
 							/* commit message + write log if majority vote is YES */
-							commit(messagePropose);
+							commit(this.proposeMessage);
 						}
 
 					}

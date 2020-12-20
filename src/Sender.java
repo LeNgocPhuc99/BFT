@@ -30,7 +30,7 @@ public class Sender extends Thread {
 		int size = ports.length;
 
 		/* Broadcast to all node in network */
-		for (int i = 1; i < size; i++) {
+		for (int i = 0; i < size; i++) {
 			if (ports[i] != this.noBroadCast) {
 				try {
 					/* Send message */

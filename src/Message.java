@@ -1,4 +1,9 @@
+/*
+type = 1: propose message
+type = 2: vote message
+type = 3: commit message
 
+*/
 public class Message {
 	public int type;
 	private final int cycle;

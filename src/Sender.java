@@ -1,7 +1,7 @@
 import java.io.PrintWriter;
 import java.net.Socket;
 
-import org.json.JSONObject;
+//import org.json.JSONObject;
 
 public class Sender extends Thread {
 
@@ -33,15 +33,10 @@ public class Sender extends Thread {
 		for (int i = 1; i < size; i++) {
 			if (ports[i] != this.noBroadCast) {
 				try {
-					/* Make message */
-					JSONObject json = new JSONObject();
-					json.put("ID", this.noBroadCast);
-					json.put("Message", this.message);
-
 					/* Send message */
 					Socket socket = new Socket("127.0.0.1", Sender.ports[i]);
 					PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-					out.println(json.toString());
+					out.println(this.message);
 					socket.close();
 					out.close();
 				} catch (Exception e) {

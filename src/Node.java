@@ -91,12 +91,12 @@ public class Node extends Thread {
 			while (true) {
 				/* Socket to receive incoming requests */
 				Socket socket = server.accept();
-				int port = socket.getPort();
+				int rePort = socket.getPort();
 				/* Read message */
 				BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 				String rawMsg = in.readLine();
 				JSONObject json = new JSONObject(rawMsg);
-
+				System.out.println("Node " + Integer.toString(this.port - 8080) + " receive: " + rawMsg);
 				/* message not match its round */
 				if (json.getInt("cycle") != cycle) {
 					continue;
@@ -108,7 +108,7 @@ public class Node extends Thread {
 				case 1: /* receive propose message from proposer */
 					/* broadcast voting message */
 					messagePropose = rawMsg;
-					vote(json, port);
+					vote(json, rePort);
 					break;
 				case 2: /* receive voting message from another node */
 					/* Add new vote */

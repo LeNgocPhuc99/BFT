@@ -4,7 +4,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 //import java.util.Scanner;
 
-import org.json.JSONObject;
+//import org.json.JSONObject;
 import org.json.JSONException;
 
 public class Main {
@@ -13,7 +13,7 @@ public class Main {
 		ArrayList<Thread> nodes = new ArrayList<Thread>();
 
 		/* Number node of network */
-		int number = 3;
+		int number = 4;
 		int[] ports = new int[number];
 
 		/* Add node to network */
@@ -29,24 +29,20 @@ public class Main {
 		Node.nodeCount = ports.length;
 		Node.cycle = 0;
 		Sender.ports = ports;
-		
+
 		/*
 		 * Case1: all loyal nodes
 		 * 
 		 * String message = "test"; Thread th1 = new Sender(message, 0); th1.start();
 		 */
 
-		/* Case2: node 8080 propose message  */
-		for (int i = 0; i < ports.length; i++) {
+		/* Case2: node 8080 propose message */
+
+		for (int i = 1; i < ports.length; i++) {
 			Socket socket = new Socket("127.0.0.1", ports[i]);
 			PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-			/* build a message */
-			
-			JSONObject json = new JSONObject();
-			json.put("Message", "test" + i);
-			json.put("ID", 8080);
-			
-			out.println(json.toString());
+			ProposeMessage message = new ProposeMessage(1, 0, (ports[0] - 8080), Integer.toString(ports[0] - 8080));
+			out.println(message.toString());
 			socket.close();
 		}
 

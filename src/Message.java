@@ -2,22 +2,12 @@
 type = 1: propose message
 type = 2: vote message
 type = 3: commit message
-
-<<<<<<< HEAD
+*/
 abstract class Message {
 	public int type;
 	private final int cycle;
 	private final int nodeID;
 	// private final String msg;
-=======
-*/
-public class Message {
-	public int type;
-	private final int cycle;			/* lượt gửi mess */
-	private final int nodeID;			/* ID của node gửi message */
-	private final String msg;			/* nội dung mess: với type = 1 ==> msg = ID của node propose, với type = 2 ==> msg = yes/no, 
-	type = 3 ==> msg = "commit" */ 
->>>>>>> cbf9c7b9a118d4b86511eb51279f690b6d77a950
 
 	Message(int type, int cycle, int id) {
 		this.type = type;

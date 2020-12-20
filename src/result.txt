@@ -1,0 +1,13 @@
+Node with port number 8080 has been added
+Node with port number 8081 has been added
+Node with port number 8082 has been added
+Node with port number 8083 has been added
+Node 2 receive: {msg: 0, type: 1, cycle: 0, nodeID:0}
+Node 3 receive: {msg: 0, type: 1, cycle: 0, nodeID:0}
+Node 1 receive: {msg: 0, type: 1, cycle: 0, nodeID:0}
+Node 3 receive: {vote: NO, type: 2, cycle: 0, nodeID:2}
+Node 2 receive: {vote: NO, type: 2, cycle: 0, nodeID:3}
+Node 1 receive: {vote: NO, type: 2, cycle: 0, nodeID:2}
+Node 1 receive: {vote: NO, type: 2, cycle: 0, nodeID:3}
+Node 2 receive: {vote: NO, type: 2, cycle: 0, nodeID:1}
+Node 3 receive: {vote: NO, type: 2, cycle: 0, nodeID:1}

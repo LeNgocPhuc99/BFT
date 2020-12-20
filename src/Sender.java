@@ -9,10 +9,20 @@ public class Sender extends Thread {
 	String message;
 	int noBroadCast;
 
+	
+	/* broadcast to all - proposer */
+	
 	Sender(String msg, int noBroadcast) {
 		this.message = msg;
 		this.noBroadCast = noBroadcast;
 	}
+	
+	/* broadcast to all  */
+	Sender(String msg) {
+		this.message = msg;
+		this.noBroadCast = -1;
+	}
+	
 
 	@Override
 	public void run() {

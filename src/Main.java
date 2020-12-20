@@ -36,13 +36,16 @@ public class Main {
 		 * String message = "test"; Thread th1 = new Sender(message, 0); th1.start();
 		 */
 
-		/* Case2: node 8080 */
+		/* Case2: node 8080 propose message  */
 		for (int i = 0; i < ports.length; i++) {
 			Socket socket = new Socket("127.0.0.1", ports[i]);
 			PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+			/* build a message */
+			
 			JSONObject json = new JSONObject();
 			json.put("Message", "test" + i);
 			json.put("ID", 8080);
+			
 			out.println(json.toString());
 			socket.close();
 		}

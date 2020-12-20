@@ -6,9 +6,10 @@ type = 3: commit message
 */
 public class Message {
 	public int type;
-	private final int cycle;
-	private final int nodeID;
-	private final String msg;
+	private final int cycle;			/* lượt gửi mess */
+	private final int nodeID;			/* ID của node gửi message */
+	private final String msg;			/* nội dung mess: với type = 1 ==> msg = ID của node propose, với type = 2 ==> msg = yes/no, 
+	type = 3 ==> msg = "commit" */ 
 
 	Message(int type, int cycle, int id, String msg) {
 		this.type = type;

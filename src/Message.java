@@ -4,6 +4,7 @@ type = 2: vote message
 type = 3: commit message
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 abstract class Message {
 	public int type;
 	private final int cycle;
@@ -13,10 +14,18 @@ abstract class Message {
 */
 public class Message {
 	public int type;
+=======
+*/
+public class Message {
+	public int type;
+>>>>>>> cbf9c7b9a118d4b86511eb51279f690b6d77a950
 	private final int cycle;			/* lượt gửi mess */
 	private final int nodeID;			/* ID của node gửi message */
 	private final String msg;			/* nội dung mess: với type = 1 ==> msg = ID của node propose, với type = 2 ==> msg = yes/no, 
 	type = 3 ==> msg = "commit" */ 
+<<<<<<< HEAD
+>>>>>>> cbf9c7b9a118d4b86511eb51279f690b6d77a950
+=======
 >>>>>>> cbf9c7b9a118d4b86511eb51279f690b6d77a950
 
 	Message(int type, int cycle, int id) {

@@ -68,7 +68,7 @@ public class Node {
 
 	public void commit(String message) {
 		System.out.println("Node " + Integer.toString(this.port - 8080) + " commit: " + message);
-		//Logger.ge
+		logger.LogMessage(message);
 	}
 
 	private boolean verifyMessage(JSONObject json, int portID) throws JSONException {
@@ -192,7 +192,7 @@ public class Node {
 					String rawMsg = in.readLine();
 					JSONObject json = new JSONObject(rawMsg);
 					System.out.println("Node " + Integer.toString(port - 8080) + " receive: " + rawMsg);
-					//System.out.println("Receive port: " + socket.getInetAddress().getHostName()+ " - ID's sender: " + json.getInt("nodeID"));
+					
 					/* message not match its round */
 					if (json.getInt("cycle") != cycle) {
 						continue;
@@ -211,7 +211,6 @@ public class Node {
 						Vote newVote = json.getString("vote").equals("YES") ? Vote.YES : Vote.NO;
 						votes.put(json.getInt("nodeID"), newVote);
 
-						// votes.put(json.getInt("nodeID"), ));
 						if (count % (nodeCount - 1) == 0) {
 							/* get majority vote */
 							Vote vote = getMajorityVote();
@@ -231,6 +230,7 @@ public class Node {
 
 			} catch (Exception e) {
 				e.printStackTrace();
+				return;
 			}
 		}
 		

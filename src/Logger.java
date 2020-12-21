@@ -31,7 +31,7 @@ public class Logger {
         }
 	}
 	
-	public void LogMessage(int proposerID, Message message)
+	public void LogMessage(String message)
 	{
 		 try{
 	            FileWriter fw = new FileWriter(logFile, true);
@@ -42,9 +42,7 @@ public class Logger {
 	            
 	            bw.write("Thoi gian: " + dateFormat.format(date));
 	            bw.newLine();
-	            bw.write("Proposer: " + Integer.toString(proposerID));
-	            bw.newLine();
-	            bw.write("Message: " + message.toString());
+	            bw.write("Noi dung: {" + message + "}");
 	            bw.newLine();
 	            bw.close();
 

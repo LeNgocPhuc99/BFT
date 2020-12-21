@@ -44,6 +44,7 @@ public class Node {
 			Socket socket = new Socket("127.0.0.1", ports[i]);
 			PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
 			ProposeMessage message = new ProposeMessage(1, cycle, (port - 8080), Integer.toString(port - 8080));
+			proposeMessage = message.toString();
 			out.println(message.toString());
 			socket.close();
 		}

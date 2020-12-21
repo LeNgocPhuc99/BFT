@@ -61,10 +61,12 @@ class ProposeMessage extends Message {
 class VoteMessage extends Message {
 	
 	private Vote vote;
+	private int proposeID;
 	
-	VoteMessage(int type, int cycle, int id, Vote vote) {
+	VoteMessage(int type, int cycle, int id, Vote vote, int proposeID) {
 		super(type, cycle, id);
 		this.vote = vote;
+		this.proposeID = proposeID;
 	}
 
 	public Vote getVote() {
@@ -73,11 +75,10 @@ class VoteMessage extends Message {
 
 	@Override
 	public String toString() {
-		return "{vote: " + vote + super.toString() + "}";
+		return "{vote: " + vote +", proposeID: " + proposeID + super.toString() + "}";
 	}	
 
 }
-
 
 
 

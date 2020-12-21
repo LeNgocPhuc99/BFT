@@ -12,45 +12,51 @@ import java.util.stream.Collectors;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class Node extends Thread {
+public class Node {
 
-	// ArrayList<String> message = new ArrayList<String>();
 	private TreeMap<Integer, Vote> votes = new TreeMap<>();
-
-	int port;
-	ServerSocket server;
+	// Static
 	public static int nodeCount;
 	public static int cycle;
-	private String proposeMessage = null;
 
-	Node(int port) throws IOException {
+	private String proposeMessage = null;
+	private final int id;
+	private int port;
+	private ServerSocket server;
+	// Node lỗi
+	private boolean isBetrayed = false;
+	// Ghi vào file
+	private Logger logger;
+	
+	Node(int port, int id) throws IOException {
 		this.port = port;
 		this.server = new ServerSocket(this.port);
+		this.id = id;
+		logger = new Logger(id);
 	}
 
-	public void propose(int[] ports, String proposeMessage) throws UnknownHostException, IOException {
-		
-		this.proposeMessage = proposeMessage;
+	public void propose(int[] ports) throws UnknownHostException, IOException {
 		for (int i = 0; i < ports.length; i++) {
+			if (i == id)
+				continue;
 			Socket socket = new Socket("127.0.0.1", ports[i]);
 			PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
 			ProposeMessage message = new ProposeMessage(1, cycle, (port - 8080), Integer.toString(port - 8080));
+			proposeMessage = message.toString();
 			out.println(message.toString());
 			socket.close();
 		}
 	}
 
-	public void vote(JSONObject json, int portID) throws JSONException {
-		boolean check;
+	public void vote(boolean check, int proposeID) throws JSONException {
 		Vote vote;
-		check = verifyMessage(json, portID);
 		if (check) {
 			vote = Vote.YES;
 		} else {
 			vote = Vote.NO;
 		}
 
-		VoteMessage message = new VoteMessage(2, cycle, (port - 8080), vote);
+		VoteMessage message = new VoteMessage(2, cycle, (port - 8080), vote,proposeID);
 
 		// broadcast vote to all
 		Thread t = new Sender(message.toString(), this.port);
@@ -59,15 +65,12 @@ public class Node extends Thread {
 
 	public void commit(String message) {
 		System.out.println("Node " + Integer.toString(this.port - 8080) + " commit: " + message);
+		logger.LogMessage(message);
 	}
 
-	private boolean verifyMessage(JSONObject json, int portID) throws JSONException {
+	private boolean verifyMessage(JSONObject json) throws JSONException {
 		int nodeID = json.getInt("nodeID");
-		/*
-		 * (cycle % nodeCount == nodeID): send in correct round, ( (portID - 8080) ==
-		 * nodeID): proposer is correct
-		 */
-		if ((cycle % (nodeCount - 1) == nodeID) /*&& ((portID - 8080) == nodeID)*/) {
+		if ((cycle % (nodeCount - 1) == nodeID)) {
 			return true;
 		}
 		return false;
@@ -85,60 +88,91 @@ public class Node extends Thread {
 
 	}
 
-	@Override
-	public void run() {
+	public void start() {
+		Thread listener = new Thread(new Listener());
+		listener.start();
+	}
+
+	public void stop() {
 		try {
-
-			int count = 0;
-			while (true) {
-				/* Socket to receive incoming requests */
-				Socket socket = server.accept();
-				int rePort = socket.getPort();
-				/* Read message */
-				BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-				String rawMsg = in.readLine();
-				JSONObject json = new JSONObject(rawMsg);
-				System.out.println("Node " + Integer.toString(this.port - 8080) + " receive: " + rawMsg);
-				//System.out.println("Receive port: " + socket.getInetAddress().getHostName()+ " - ID's sender: " + json.getInt("nodeID"));
-				/* message not match its round */
-				if (json.getInt("cycle") != cycle) {
-					continue;
-				}
-
-				count++;
-
-				switch (json.getInt("type")) {
-				case 1: /* receive propose message from proposer */
-					/* broadcast voting message */
-					this.proposeMessage = rawMsg;
-					vote(json, rePort);
-					break;
-				case 2: /* receive voting message from another node */
-					/* Add new vote */
-					Vote newVote = json.getString("vote").equals("YES") ? Vote.YES : Vote.NO;
-					votes.put(json.getInt("nodeID"), newVote);
-
-					// votes.put(json.getInt("nodeID"), ));
-					if (count % (nodeCount - 1) == 0) {
-						/* get majority vote */
-						Vote vote = getMajorityVote();
-						if (vote.equals(Vote.YES)) {
-							/* commit message + write log if majority vote is YES */
-							commit(this.proposeMessage);
-						}
-
-					}
-
-					break;
-				}
-
-				socket.close();
-				in.close();
-			}
-
-		} catch (Exception e) {
+			server.close();
+		} catch (IOException e) {
+			
 			e.printStackTrace();
 		}
 	}
 
+	public void setBetrayed() {
+		isBetrayed = true;
+	}
+
+	public boolean getStatus() {
+		return isBetrayed;
+	}
+
+	private class Listener implements Runnable {
+
+		@Override
+		public void run() {
+
+			try {
+				int count = 0;
+				while (true) {
+					/* Socket to receive incoming requests */
+					Socket socket = server.accept();
+					/* Read message */
+					BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+					String rawMsg = in.readLine();
+					JSONObject json = new JSONObject(rawMsg);
+					System.out.println("Node " + Integer.toString(port - 8080) + " receive: " + rawMsg);
+
+					/* message not match its round */
+					if (json.getInt("cycle") != cycle) {
+						continue;
+					}
+
+					count++;
+
+					switch (json.getInt("type")) {
+					case 1: /* receive propose message from proposer */
+						/* broadcast voting message */
+						boolean check = verifyMessage(json);
+						if (!check) {
+							continue;
+						}
+						else {
+							proposeMessage = rawMsg;
+							vote(check, json.getInt("nodeID"));
+							break;
+						}
+					case 2: /* receive voting message from another node */
+						/* Add new vote */
+						Vote newVote = json.getString("vote").equals("YES") ? Vote.YES : Vote.NO;
+						votes.put(json.getInt("nodeID"), newVote);
+
+						if (count % (nodeCount - 1) == 0) {
+							/* get majority vote */
+							Vote vote = getMajorityVote();
+							if (vote.equals(Vote.YES)) {
+								/* commit message + write log if majority vote is YES */
+								commit(proposeMessage);
+								votes.clear();
+							}
+
+						}
+
+						break;
+					}
+
+					socket.close();
+					in.close();
+				}
+
+			} catch (Exception e) {
+				e.printStackTrace();
+				return;
+			}
+		}
+
+	}
 }

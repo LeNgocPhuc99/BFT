@@ -1,20 +1,6 @@
-Node with port number 8080 has been added
-Node with port number 8081 has been added
-Node with port number 8082 has been added
-Node with port number 8083 has been added
-Node 1 receive: {msg: 0, type: 1, cycle: 0, nodeID:0}
-Node 2 receive: {msg: 0, type: 1, cycle: 0, nodeID:0}
-Node 3 receive: {msg: 0, type: 1, cycle: 0, nodeID:0}
-Node 0 receive: {vote: YES, type: 2, cycle: 0, nodeID:1}
-Node 3 receive: {vote: YES, type: 2, cycle: 0, nodeID:1}
-Node 2 receive: {vote: YES, type: 2, cycle: 0, nodeID:1}
-Node 0 receive: {vote: YES, type: 2, cycle: 0, nodeID:3}
-Node 0 receive: {vote: YES, type: 2, cycle: 0, nodeID:2}
-Node 1 receive: {vote: YES, type: 2, cycle: 0, nodeID:2}
-Node 3 receive: {vote: YES, type: 2, cycle: 0, nodeID:2}
-Node 1 receive: {vote: YES, type: 2, cycle: 0, nodeID:3}
-Node 2 receive: {vote: YES, type: 2, cycle: 0, nodeID:3}
-Node 3 commit: {msg: 0, type: 1, cycle: 0, nodeID:0}
-Node 1 commit: {msg: 0, type: 1, cycle: 0, nodeID:0}
-Node 2 commit: {msg: 0, type: 1, cycle: 0, nodeID:0}
-Node 0 commit: null
+Thoi gian: 21/12/2020 21:10:53
+Noi dung: {{msg: 0, type: 1, cycle: 0, nodeID:0}}
+Thoi gian: 21/12/2020 21:11:08
+Noi dung: {{msg: 1, type: 1, cycle: 1, nodeID:1}}
+Thoi gian: 21/12/2020 21:11:23
+Noi dung: {{msg: 2, type: 1, cycle: 2, nodeID:2}}

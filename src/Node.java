@@ -24,8 +24,11 @@ public class Node {
 	private final int id;
 	private int port;
 	private ServerSocket server;
-	private boolean isBetrayed = false;
+	// Node lỗi
+	private boolean isBetrayed = false;	
+	// Ghi vào file
 	private Logger logger;
+	// Thread để listen socket
 
 	Node(int port, int id) throws IOException {
 		this.port = port;
@@ -151,6 +154,16 @@ public class Node {
 	public void start() {
 		Thread listener = new Thread(new Listener());
 		listener.start();
+	}
+	
+	public void stop()
+	{
+		try {
+			server.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public void setBetrayed()

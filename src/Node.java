@@ -25,11 +25,13 @@ public class Node {
 	private int port;
 	private ServerSocket server;
 	private boolean isBetrayed = false;
+	private Logger logger;
 
 	Node(int port, int id) throws IOException {
 		this.port = port;
 		this.server = new ServerSocket(this.port);
 		this.id = id;
+		logger = new Logger(id);
 	}
 
 	public void propose(int[] ports) throws UnknownHostException, IOException {
@@ -63,6 +65,7 @@ public class Node {
 
 	public void commit(String message) {
 		System.out.println("Node " + Integer.toString(this.port - 8080) + " commit: " + message);
+		//Logger.ge
 	}
 
 	private boolean verifyMessage(JSONObject json, int portID) throws JSONException {
@@ -166,7 +169,6 @@ public class Node {
 		public void run() {
 			// TODO Auto-generated method stub
 			try {
-
 				int count = 0;
 				while (true) {
 					/* Socket to receive incoming requests */

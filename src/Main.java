@@ -1,6 +1,6 @@
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.net.Socket;
+//import java.io.PrintWriter;
+//import java.net.Socket;
 import java.util.ArrayList;
 //import java.util.Scanner;
 import java.util.Random;
@@ -42,14 +42,8 @@ public class Main {
 		Node.nodeCount = ports.length;
 		Node.cycle = 0;
 		Sender.ports = ports;
-
-		/*
-		 * Case1: all loyal nodes
-		 * 
-		 * String message = "test"; Thread th1 = new Sender(message, 0); th1.start();
-		 */
-
-		/* Case2: node 8080 propose message */
+		
+		// Start
 		for (int i = 0; i < ports.length; i++) {
 //			Socket socket = new Socket("127.0.0.1", ports[i]);
 //			PrintWriter out = new PrintWriter(socket.getOutputStream(), true);

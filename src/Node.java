@@ -47,9 +47,9 @@ public class Node {
 			PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
 			
 			// Random ID propose nếu là node lỗi
-			int nodeIdPropose = isBetrayed ? rand.nextInt(nodeCount) : port - 8080;
+			//int nodeIdPropose = isBetrayed ? rand.nextInt(nodeCount) : port - 8080;
 			
-			ProposeMessage message = new ProposeMessage(1, cycle, nodeIdPropose, Integer.toString(port - 8080));
+			ProposeMessage message = new ProposeMessage(1, cycle, port - 8080, Integer.toString(port - 8080));
 			// proposeMessage = message.toString();
 			msgQueue.put((this.port - 8080), message.toString());
 			out.println(message.toString());

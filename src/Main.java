@@ -12,7 +12,7 @@ public class Main {
 		ArrayList<Node> nodes = new ArrayList<Node>();
 
 		/* Number node of network */
-		int number = 4;
+		int number = 7;
 		int[] ports = new int[number];
 
 		/* Add node to network */
@@ -28,8 +28,8 @@ public class Main {
 		// Random betrayed nodes
 		Random rand = new Random();
 		
-		// 1 nodes lỗi
-		for (int i = 0; i < 1; ++i) {
+		// random các nodes lỗi
+		for (int i = 0; i < 4; ++i) {
 			while(true)
 			{
 				int randomBetrayedIndex = rand.nextInt(number);

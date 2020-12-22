@@ -12,7 +12,7 @@ public class Main {
 		ArrayList<Node> nodes = new ArrayList<Node>();
 
 		/* Number node of network */
-		int number = 4;
+		int number = 7;
 		int[] ports = new int[number];
 
 		/* Add node to network */

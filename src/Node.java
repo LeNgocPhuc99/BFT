@@ -45,7 +45,11 @@ public class Node {
 				continue;
 			Socket socket = new Socket("127.0.0.1", ports[i]);
 			PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-			ProposeMessage message = new ProposeMessage(1, cycle, (port - 8080), Integer.toString(port - 8080));
+			
+			// Random ID propose nếu là node lỗi
+			int nodeIdPropose = isBetrayed ? rand.nextInt(nodeCount) : port - 8080;
+			
+			ProposeMessage message = new ProposeMessage(1, cycle, nodeIdPropose, Integer.toString(port - 8080));
 			// proposeMessage = message.toString();
 			msgQueue.put((this.port - 8080), message.toString());
 			out.println(message.toString());
@@ -59,7 +63,7 @@ public class Node {
 		if (isBetrayed) {
 			// int x = rand.nextInt(Vote.class.getEnumConstants().length);
 			// vote = Vote.NO;
-			int x = (proposeID % 2 == 0) ? 0 : 1;
+			int x = rand.nextInt(Vote.class.getEnumConstants().length);
 			vote = Vote.class.getEnumConstants()[x];
 			votes.put(this.port, vote);
 		} else {
@@ -130,7 +134,7 @@ public class Node {
 
 		@Override
 		public void run() {
-
+			rand = new Random();
 			try {
 				int count = 0;
 				while (true) {
@@ -190,7 +194,7 @@ public class Node {
 				}
 
 			} catch (Exception e) {
-				e.printStackTrace();
+				System.out.println("Thread "+ id + " is finished");
 				return;
 			}
 		}

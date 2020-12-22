@@ -9,6 +9,8 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
+import java.util.Random;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -20,7 +22,7 @@ public class Node {
 	public static int nodeCount;
 	public static int cycle;
 
-	//private String proposeMessage = null;
+	// private String proposeMessage = null;
 	private final int id;
 	private int port;
 	private ServerSocket server;
@@ -28,7 +30,8 @@ public class Node {
 	private boolean isBetrayed = false;
 	// Ghi vào file
 	private Logger logger;
-	
+	Random rand;
+
 	Node(int port, int id) throws IOException {
 		this.port = port;
 		this.server = new ServerSocket(this.port);
@@ -43,7 +46,7 @@ public class Node {
 			Socket socket = new Socket("127.0.0.1", ports[i]);
 			PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
 			ProposeMessage message = new ProposeMessage(1, cycle, (port - 8080), Integer.toString(port - 8080));
-			//proposeMessage = message.toString();
+			// proposeMessage = message.toString();
 			msgQueue.put((this.port - 8080), message.toString());
 			out.println(message.toString());
 			socket.close();
@@ -52,13 +55,25 @@ public class Node {
 
 	public void vote(boolean check, int proposeID) throws JSONException {
 		Vote vote;
-		if (check) {
-			vote = Vote.YES;
+		/*
+		 * if (check) { vote = Vote.YES; } else { vote = Vote.NO; }
+		 */
+		if (isBetrayed) {
+			//int x = rand.nextInt(Vote.class.getEnumConstants().length);
+			//vote = Vote.NO;
+			int x = (proposeID % 2 == 0) ? 0 : 1;
+			vote = Vote.class.getEnumConstants()[x];
+			votes.put(this.port, vote);
 		} else {
-			vote = Vote.NO;
+			if (check) {
+				vote = Vote.YES;
+			} else {
+				vote = Vote.NO;
+			}
+			votes.put(this.port, vote);
 		}
 
-		VoteMessage message = new VoteMessage(2, cycle, (port - 8080), vote,proposeID);
+		VoteMessage message = new VoteMessage(2, cycle, (port - 8080), vote, proposeID);
 
 		// broadcast vote to all
 		Thread t = new Sender(message.toString(), this.port);
@@ -66,13 +81,14 @@ public class Node {
 	}
 
 	public void commit(String message, int count) {
-		System.out.println("Node " + Integer.toString(this.port - 8080) + " commit: " + message + " with count: " + Integer.toString(count));
+		System.out.println("Node " + Integer.toString(this.port - 8080) + " commit: " + message + " with count: "
+				+ Integer.toString(count));
 		logger.LogMessage(message);
 	}
 
 	private boolean verifyMessage(JSONObject json) throws JSONException {
 		int nodeID = json.getInt("nodeID");
-		if ((cycle % nodeCount  == nodeID)) {
+		if ((cycle % nodeCount == nodeID)) {
 			return true;
 		}
 		return false;
@@ -99,7 +115,7 @@ public class Node {
 		try {
 			server.close();
 		} catch (IOException e) {
-			
+
 			e.printStackTrace();
 		}
 	}
@@ -126,28 +142,26 @@ public class Node {
 					BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 					String rawMsg = in.readLine();
 					JSONObject json = new JSONObject(rawMsg);
-					System.out.println("Node " + Integer.toString(port - 8080) + " receive: " + rawMsg + " in cycle: " + json.getInt("cycle"));
+					System.out.println("Node " + Integer.toString(port - 8080) + " receive: " + rawMsg + " in cycle: "
+							+ json.getInt("cycle"));
 
 					/* message not match its round */
 					if (json.getInt("cycle") != cycle) {
 						continue;
 					}
 
-					
-
 					switch (json.getInt("type")) {
 					case 1: /* receive propose message from proposer */
 						/* broadcast voting message */
 						boolean check = verifyMessage(json);
-						//System.out.println(check);
+						// System.out.println(check);
 						if (!check) {
 							continue;
-						}
-						else {
+						} else {
 							count++;
-							int nodeID = json.getInt("nodeID");	 
+							int nodeID = json.getInt("nodeID");
 							msgQueue.put(nodeID, rawMsg);
-							//proposeMessage = rawMsg;
+							// proposeMessage = rawMsg;
 							vote(check, nodeID);
 							break;
 						}
@@ -162,7 +176,7 @@ public class Node {
 							Vote vote = getMajorityVote();
 							if (vote.equals(Vote.YES)) {
 								/* commit message + write log if majority vote is YES */
-								//commit(proposeMessage);
+								// commit(proposeMessage);
 								commit(msgQueue.get(json.getInt("proposeID")), count);
 								votes.clear();
 								msgQueue.clear();

@@ -30,15 +30,17 @@ public class Main {
 		
 		// 1 nodes lỗi
 		for (int i = 0; i < 1; ++i) {
-			if (!nodes.get(i).getStatus()) {
+			while(true)
+			{
 				int randomBetrayedIndex = rand.nextInt(number);
+				if(nodes.get(randomBetrayedIndex).getStatus())
+					continue;
 				nodes.get(randomBetrayedIndex).setBetrayed();
-			}
+				System.out.println("Node "+ Integer.toString(randomBetrayedIndex) + " is betrayed.");
+				break;
+			}			
 		}
-		
-		
-		//nodes[1].setBettray();
-		
+				
 		Node.nodeCount = ports.length;
 		Node.cycle = 0;
 		Sender.ports = ports;
@@ -46,8 +48,6 @@ public class Main {
 		// Start
 		int flag = 1;
 		while (true) {
-			if (flag == 3)
-				break;
 			
 			for (int i = 0; i < ports.length; i++) {
 				System.out.println("In cycle: " + Node.cycle);
@@ -72,6 +72,9 @@ public class Main {
 				
 				Node.cycle += 1;
 			}
+			// 7 node chạy 3 lần = 5 phút thực thi
+			if (flag == 3)
+				break;
 			++flag;
 		}
 		// End

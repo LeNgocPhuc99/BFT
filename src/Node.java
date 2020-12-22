@@ -6,6 +6,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.Map;
+import java.util.Random;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
@@ -28,6 +29,8 @@ public class Node {
 	private boolean isBetrayed = false;
 	// Ghi vào file
 	private Logger logger;
+	// Random instance
+	Random rand;
 	
 	Node(int port, int id) throws IOException {
 		this.port = port;
@@ -42,8 +45,11 @@ public class Node {
 				continue;
 			Socket socket = new Socket("127.0.0.1", ports[i]);
 			PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-			ProposeMessage message = new ProposeMessage(1, cycle, (port - 8080), Integer.toString(port - 8080));
-			//proposeMessage = message.toString();
+			
+			// Random ID propose nếu là node lỗi
+			int nodeIdPropose = isBetrayed ? rand.nextInt(nodeCount) : port - 8080;
+			ProposeMessage message = new ProposeMessage(1, cycle, (nodeIdPropose), Integer.toString(port - 8080));
+			
 			msgQueue.put((this.port - 8080), message.toString());
 			out.println(message.toString());
 			socket.close();
@@ -52,12 +58,21 @@ public class Node {
 
 	public void vote(boolean check, int proposeID) throws JSONException {
 		Vote vote;
-		if (check) {
-			vote = Vote.YES;
-		} else {
-			vote = Vote.NO;
+		// Random vote nếu là node lỗi
+		if(isBetrayed)
+		{
+			int x = rand.nextInt(Vote.class.getEnumConstants().length);
+			vote = Vote.class.getEnumConstants()[x];
 		}
-
+		else
+		{
+			if (check) {
+				vote = Vote.YES;
+			} else {
+				vote = Vote.NO;
+			}
+		}
+		
 		VoteMessage message = new VoteMessage(2, cycle, (port - 8080), vote,proposeID);
 
 		// broadcast vote to all
@@ -116,7 +131,7 @@ public class Node {
 
 		@Override
 		public void run() {
-
+			rand = new Random();
 			try {
 				int count = 0;
 				while (true) {
@@ -178,7 +193,7 @@ public class Node {
 				}
 
 			} catch (Exception e) {
-				e.printStackTrace();
+				System.out.println("Thread " + id + " finished.");
 				return;
 			}
 		}

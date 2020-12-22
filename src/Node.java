@@ -55,12 +55,10 @@ public class Node {
 
 	public void vote(boolean check, int proposeID) throws JSONException {
 		Vote vote;
-		/*
-		 * if (check) { vote = Vote.YES; } else { vote = Vote.NO; }
-		 */
+		// Random vote nếu là node lỗi
 		if (isBetrayed) {
-			//int x = rand.nextInt(Vote.class.getEnumConstants().length);
-			//vote = Vote.NO;
+			// int x = rand.nextInt(Vote.class.getEnumConstants().length);
+			// vote = Vote.NO;
 			int x = (proposeID % 2 == 0) ? 0 : 1;
 			vote = Vote.class.getEnumConstants()[x];
 			votes.put(this.port, vote);

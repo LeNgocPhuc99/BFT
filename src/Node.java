@@ -65,8 +65,8 @@ public class Node {
 		t.start();
 	}
 
-	public void commit(String message) {
-		System.out.println("Node " + Integer.toString(this.port - 8080) + " commit: " + message);
+	public void commit(String message, int count) {
+		System.out.println("Node " + Integer.toString(this.port - 8080) + " commit: " + message + " with count: " + Integer.toString(count));
 		logger.LogMessage(message);
 	}
 
@@ -161,11 +161,12 @@ public class Node {
 							if (vote.equals(Vote.YES)) {
 								/* commit message + write log if majority vote is YES */
 								//commit(proposeMessage);
-								commit(msgQueue.get(json.getInt("proposeID")));
+								commit(msgQueue.get(json.getInt("proposeID")), count);
 								votes.clear();
 								msgQueue.clear();
 							}
-
+							count = 0;
+							
 						}
 
 						break;

@@ -2,7 +2,7 @@ import java.io.IOException;
 
 import java.util.ArrayList;
 
-import java.util.Random;
+//import java.util.Random;
 
 import org.json.JSONException;
 
@@ -26,8 +26,8 @@ public class Main {
 		}
 
 		// Random betrayed nodes
-		Random rand = new Random();
-
+		//Random rand = new Random();
+		/*
 		// 1 nodes lỗi
 		for (int i = 0; i < 1; ++i) {
 			if (!nodes.get(i).getStatus()) {
@@ -35,7 +35,8 @@ public class Main {
 				nodes.get(randomBetrayedIndex).setBetrayed();
 			}
 		}
-
+		*/
+		
 		Node.nodeCount = ports.length;
 		Node.cycle = 0;
 		Sender.ports = ports;
@@ -49,7 +50,7 @@ public class Main {
 			for (int i = 0; i < ports.length; i++) {
 				System.out.println("In cycle: " + Node.cycle);
 				nodes.get(i).propose(ports);
-
+				/*
 				// Node lỗi gửi không đúng round ngẫu nhiên
 				for (int j = 0; j < ports.length; j++) {
 					if (nodes.get(j).getStatus() && (j != i)) {
@@ -59,7 +60,7 @@ public class Main {
 						}
 					}
 				}
-
+				*/
 				try {
 					Thread.sleep(15 * 1000);
 				} catch (InterruptedException e) {

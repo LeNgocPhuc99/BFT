@@ -133,7 +133,7 @@ public class Node {
 						continue;
 					}
 
-					count++;
+					
 
 					switch (json.getInt("type")) {
 					case 1: /* receive propose message from proposer */
@@ -144,7 +144,8 @@ public class Node {
 							continue;
 						}
 						else {
-							int nodeID = json.getInt("nodeID");
+							count++;
+							int nodeID = json.getInt("nodeID");	 
 							msgQueue.put(nodeID, rawMsg);
 							//proposeMessage = rawMsg;
 							vote(check, nodeID);
@@ -152,6 +153,7 @@ public class Node {
 						}
 					case 2: /* receive voting message from another node */
 						/* Add new vote */
+						count++;
 						Vote newVote = json.getString("vote").equals("YES") ? Vote.YES : Vote.NO;
 						votes.put(json.getInt("nodeID"), newVote);
 
@@ -166,7 +168,6 @@ public class Node {
 								msgQueue.clear();
 							}
 							count = 0;
-							
 						}
 
 						break;

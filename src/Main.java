@@ -2,7 +2,7 @@ import java.io.IOException;
 
 import java.util.ArrayList;
 
-//import java.util.Random;
+import java.util.Random;
 
 import org.json.JSONException;
 
@@ -12,7 +12,7 @@ public class Main {
 		ArrayList<Node> nodes = new ArrayList<Node>();
 
 		/* Number node of network */
-		int number = 7;
+		int number = 4;
 		int[] ports = new int[number];
 
 		/* Add node to network */
@@ -24,10 +24,10 @@ public class Main {
 			nodes.add(node);
 			System.out.println("Node with port number " + addport + " has been added");
 		}
-
+		
 		// Random betrayed nodes
-		//Random rand = new Random();
-		/*
+		Random rand = new Random();
+		
 		// 1 nodes lỗi
 		for (int i = 0; i < 1; ++i) {
 			if (!nodes.get(i).getStatus()) {
@@ -35,7 +35,9 @@ public class Main {
 				nodes.get(randomBetrayedIndex).setBetrayed();
 			}
 		}
-		*/
+		
+		
+		//nodes[1].setBettray();
 		
 		Node.nodeCount = ports.length;
 		Node.cycle = 0;
@@ -50,7 +52,7 @@ public class Main {
 			for (int i = 0; i < ports.length; i++) {
 				System.out.println("In cycle: " + Node.cycle);
 				nodes.get(i).propose(ports);
-				/*
+				
 				// Node lỗi gửi không đúng round ngẫu nhiên
 				for (int j = 0; j < ports.length; j++) {
 					if (nodes.get(j).getStatus() && (j != i)) {
@@ -60,7 +62,7 @@ public class Main {
 						}
 					}
 				}
-				*/
+				
 				try {
 					Thread.sleep(15 * 1000);
 				} catch (InterruptedException e) {

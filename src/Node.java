@@ -14,12 +14,13 @@ import org.json.JSONObject;
 
 public class Node {
 
+	private TreeMap<Integer, String> msgQueue = new TreeMap<>();
 	private TreeMap<Integer, Vote> votes = new TreeMap<>();
 	// Static
 	public static int nodeCount;
 	public static int cycle;
 
-	private String proposeMessage = null;
+	//private String proposeMessage = null;
 	private final int id;
 	private int port;
 	private ServerSocket server;
@@ -42,7 +43,8 @@ public class Node {
 			Socket socket = new Socket("127.0.0.1", ports[i]);
 			PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
 			ProposeMessage message = new ProposeMessage(1, cycle, (port - 8080), Integer.toString(port - 8080));
-			proposeMessage = message.toString();
+			//proposeMessage = message.toString();
+			msgQueue.put((this.port - 8080), message.toString());
 			out.println(message.toString());
 			socket.close();
 		}
@@ -141,8 +143,10 @@ public class Node {
 							continue;
 						}
 						else {
-							proposeMessage = rawMsg;
-							vote(check, json.getInt("nodeID"));
+							int nodeID = json.getInt("nodeID");
+							msgQueue.put(nodeID, rawMsg);
+							//proposeMessage = rawMsg;
+							vote(check, nodeID);
 							break;
 						}
 					case 2: /* receive voting message from another node */
@@ -155,8 +159,10 @@ public class Node {
 							Vote vote = getMajorityVote();
 							if (vote.equals(Vote.YES)) {
 								/* commit message + write log if majority vote is YES */
-								commit(proposeMessage);
+								//commit(proposeMessage);
+								commit(msgQueue.get(json.getInt("proposeID")));
 								votes.clear();
+								msgQueue.clear();
 							}
 
 						}

@@ -47,6 +47,7 @@ public class Main {
 				break;
 			
 			for (int i = 0; i < ports.length; i++) {
+				System.out.println("In cycle: " + Node.cycle);
 				nodes.get(i).propose(ports);
 
 				// Node lỗi gửi không đúng round ngẫu nhiên
@@ -65,7 +66,7 @@ public class Main {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				System.out.println("In cycle: " + Node.cycle);
+				
 				Node.cycle += 1;
 			}
 			++flag;

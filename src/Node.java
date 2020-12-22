@@ -72,7 +72,7 @@ public class Node {
 
 	private boolean verifyMessage(JSONObject json) throws JSONException {
 		int nodeID = json.getInt("nodeID");
-		if ((cycle % (nodeCount - 1) == nodeID)) {
+		if ((cycle % nodeCount  == nodeID)) {
 			return true;
 		}
 		return false;
@@ -126,7 +126,7 @@ public class Node {
 					BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 					String rawMsg = in.readLine();
 					JSONObject json = new JSONObject(rawMsg);
-					System.out.println("Node " + Integer.toString(port - 8080) + " receive: " + rawMsg);
+					System.out.println("Node " + Integer.toString(port - 8080) + " receive: " + rawMsg + " in cycle: " + json.getInt("cycle"));
 
 					/* message not match its round */
 					if (json.getInt("cycle") != cycle) {
@@ -139,6 +139,7 @@ public class Node {
 					case 1: /* receive propose message from proposer */
 						/* broadcast voting message */
 						boolean check = verifyMessage(json);
+						//System.out.println(check);
 						if (!check) {
 							continue;
 						}
